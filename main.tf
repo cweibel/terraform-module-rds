@@ -58,8 +58,8 @@ resource "aws_db_instance" "rds-db-instance" {
 ################################################################################
 # Output creds for storing in Vault
 ################################################################################
-output "rds_db_instance_dbuser" {value = "${random_string.master-db-user-name.result}"}
-output "rds_db_instance_dbpass" {value = "${random_string.master-db-password.result}"}
-output "rds_db_instance_dbhost" {value = "${aws_db_instance.rds-db-instance.address}"}
+output "rds_db_instance_dbuser" {value = random_string.master-db-user-name.result }
+output "rds_db_instance_dbpass" {value = random_string.master-db-password.result }
+output "rds_db_instance_dbhost" {value = aws_db_instance.rds-db-instance.address }
 
 
