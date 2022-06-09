@@ -38,8 +38,8 @@ resource "aws_db_instance" "rds-db-instance" {
   max_allocated_storage      = var.max_allocated_storage
   storage_type               = "gp2" # NOTE: gp3 isn't supported
   engine                     = "postgres"
-  engine_version             = "${var.engine_version}"
-  instance_class             = "${var.instance_class}"
+  engine_version             = var.engine_version
+  instance_class             = var.instance_class
   identifier_prefix          = "${var.rds_instance_name}-"
   db_name                    = "master"
   username                   = "u${random_string.master-db-user-name.result}"
