@@ -52,6 +52,17 @@ resource "aws_db_instance" "rds-db-instance" {
   skip_final_snapshot        = true
   kms_key_id                 = var.kms_rds_key_by_arn_arn
   storage_encrypted          = true
+  
+  # Snapshot configuration
+  backup_retention_period = 30
+  backup_window = "10:00 - 11:00"
+
+  # Copy tags to backup snapshots and retain backups even after the instance has been deleted.
+  copy_tags_to_snapshot     = true
+  delete_automated_backups  = false
+  
+  
+  
   tags                       = merge({Name = "${var.rds_instance_name}"}, var.resource_tags )
 }
 
