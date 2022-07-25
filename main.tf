@@ -54,7 +54,6 @@ resource "aws_db_instance" "rds-db-instance" {
   storage_encrypted          = true
   
   # Snapshot configuration
-  backup_retention_period = 30
   backup_window = "10:00 - 11:00"
 
   # Copy tags to backup snapshots and retain backups even after the instance has been deleted.
