@@ -8,7 +8,14 @@ variable rds_db_subnet_group_name   {} # RDS Subnet group name                  
 
 variable allocated_storage          { default = 20 }
 variable max_allocated_storage      { default = 100 }
+variable deletion_protection        { default = true }
+variable multi_az                   { default = false }
 variable engine_version             { default = "14.1" }
+variable rds_family {
+  type        = string
+  default     = "postgres14"
+  description = "Needs to match the engine version"
+}
 variable instance_class             { default = "db.m5.large" }
 
 ################################################################################
@@ -47,11 +54,12 @@ resource "aws_db_instance" "rds-db-instance" {
   db_subnet_group_name       = var.rds_db_subnet_group_name
   vpc_security_group_ids     = ["${var.rds_security_group_id}"]
   auto_minor_version_upgrade = true #Required by Sentinel
-  deletion_protection        = false  
+  deletion_protection        = var.deletion_protection  
   backup_retention_period    = 15   #Required by Sentinel, required to be value=15
   skip_final_snapshot        = true
   kms_key_id                 = var.kms_rds_key_by_arn_arn
   storage_encrypted          = true
+  multi_az                   = var.multi_az
   
   # Snapshot configuration
   backup_window = "10:00 - 11:00"
@@ -60,10 +68,27 @@ resource "aws_db_instance" "rds-db-instance" {
   copy_tags_to_snapshot     = true
   delete_automated_backups  = false
   
+  parameter_group_name      = aws_db_parameter_group.force_ssl.name
   
+  lifecycle {
+    ignore_changes = [ engine_verison ]
+  }
   
   tags                       = merge({Name = "${var.rds_instance_name}"}, var.resource_tags )
 }
+
+
+resource "aws_db_parameter_group" "force_ssl" {
+  name        = "${var.rds_instance_name}-force-ssl-parameter-group"
+  description = "${var.rds_instance_name} Force SSL Parameter Group"
+  family      = var.rds_family
+  
+  parameter {
+    name  = "rds.force_ssl"
+    value = 1
+  }
+}
+
 
 ################################################################################
 # Output creds for storing in Vault
