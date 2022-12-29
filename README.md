@@ -15,6 +15,11 @@ Inputs - Optional:
  - `max_allocated_storage` - Maximum size in GB for the RDS instance
  - `engine_version` - db engine version, ex "14.1"
  - `instance_class` - db instance size, ex "db.m5.large"
+ - `deletion_protection` - makes it harder to accidentally delete the RDS instance, default is "true"
+ - `multi_az` - whether to enable multi AZ support, default is "false"
+ - `engine_version` - db engine version, ex "14.1"
+ - `rds_family` - Needs to match the engine version, default is "postgres14"
+
 
 Outputs:
  - `rds_db_instance_dbuser` - Username suffix for the RDS Instance
